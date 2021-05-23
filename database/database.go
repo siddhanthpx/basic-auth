@@ -1,8 +1,7 @@
 package database
 
 import (
-	"fmt"
-	"os"
+	"todo-app/models"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -10,16 +9,22 @@ import (
 
 func ConnectDB() (*gorm.DB, error) {
 
-	var (
-		host     = os.Getenv("HOST")
-		user     = os.Getenv("USER")
-		password = os.Getenv("PASSWORD")
-		dbname   = os.Getenv("DBNAME")
-		port     = os.Getenv("DBPORT")
-	)
-
-	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
-		host, user, password, dbname, port)
+	dsn := "host=localhost user=todo password=password dbname=tasks port=5432 sslmode=disable"
 	return gorm.Open(postgres.Open(dsn), &gorm.Config{})
+
+}
+
+func Initialize() error {
+
+	db, err := ConnectDB()
+	if err != nil {
+		return err
+	}
+
+	if err := db.AutoMigrate(&models.Task{}); err != nil {
+		return err
+	}
+
+	return nil
 
 }
