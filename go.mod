@@ -1,4 +1,4 @@
-module basic-auth
+module todo-app
 
 go 1.16
 
